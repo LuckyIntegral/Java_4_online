@@ -1,4 +1,5 @@
 ## About compilation ##
-### gcc ###
-`gcc hello.c -o hello`\
-`./hello`
+### go to /java/simple ###
+`java Hello.java`\
+`java Hello`
+### go to java/package ###
