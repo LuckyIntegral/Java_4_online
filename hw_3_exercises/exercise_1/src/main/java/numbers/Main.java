@@ -10,7 +10,7 @@ public class Main {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String line;
         int sum;
-        System.out.println("Write \"exit\" to exit the system");
+        System.out.println("Write \"exit\" to exit the program");
         while (!(line = reader.readLine()).equals("exit")) {
             sum = 0;
             Pattern pattern = Pattern.compile("[!\\d]*(\\d+)[!\\d]*");
@@ -18,7 +18,7 @@ public class Main {
             while (matcher.find()) {
                 sum += Integer.parseInt(matcher.group());
             }
-            System.out.println("Your sum is = " + sum + ". Write \"exit\" to exit the system");
+            System.out.println("Your sum is = " + sum + ". Write \"exit\" to exit the program");
         }
     }
 }
