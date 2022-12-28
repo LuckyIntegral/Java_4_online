@@ -28,7 +28,7 @@ public class DbGarage {
         return garages;
     }
 
-    public void deleteGarage(Garage garage) {
+    public void delete(Garage garage) {
         garages.remove(garage);
     }
 }

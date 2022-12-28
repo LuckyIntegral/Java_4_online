@@ -24,7 +24,7 @@ public class DbCar {
         cars.add(car);
     }
 
-    public List<Car> findAllCar() {
+    public List<Car> findAll() {
         return cars;
     }
 

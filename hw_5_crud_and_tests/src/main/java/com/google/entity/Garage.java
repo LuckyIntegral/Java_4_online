@@ -11,13 +11,11 @@ public class Garage extends BaseEntity {
 
     @Override
     public String toString() {
-        return "Garage{" +
-                "name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", capacity=" + capacity +
-                ", id='" + getId() + '\'' +
-                ", carInside=" + carInside +
-                '}';
+        return name + " ".repeat(14 - name.length()) +
+                address + " ".repeat(14 - address.length()) +
+                capacity + " cars  " + " ".repeat(3 - String.valueOf(capacity).length()) +
+                carInside.size() + " cars inside  " + " ".repeat(3 - String.valueOf(carInside.size()).length()) +
+                getId();
     }
 
     public void addCar(Car car) {
@@ -28,7 +26,7 @@ public class Garage extends BaseEntity {
         carInside.remove(car);
     }
 
-    public List<Car> getCarInside() {
+    public List<Car> getCarsInside() {
         return carInside;
     }
 

@@ -1,20 +1,28 @@
 package com.google.entity;
 
 public class Car extends BaseEntity {
-    private String model;
+    private String brand;
     private String country;
     private String fuel;
+    private String color;
     private Garage garage;
 
     @Override
     public String toString() {
-        return "Car{" +
-                "model='" + model + '\'' +
-                ", country='" + country + '\'' +
-                ", fuel='" + fuel + '\'' +
-                ", id='" + getId() + '\'' +
-                ", garage=" + garage.getName() +
-                '}';
+        return brand + " ".repeat(12 - brand.length()) +
+                country + " ".repeat(20 - country.length()) +
+                fuel + " ".repeat(10 - fuel.length()) +
+                color + " ".repeat(12 - color.length()) +
+                (garage == null ? "No info       " : garage.getName() + " ".repeat(14 - garage.getName().length())) +
+                getId();
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 
     public Garage getGarage() {
@@ -25,12 +33,16 @@ public class Car extends BaseEntity {
         this.garage = garage;
     }
 
-    public String getModel() {
-        return model;
+    public void removeGarage() {
+        this.garage = null;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public String getBrand() {
+        return brand;
+    }
+
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
 
     public String getCountry() {
