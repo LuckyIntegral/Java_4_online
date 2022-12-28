@@ -16,16 +16,9 @@
         <maven.surefire.plugin.version>2.22.2</maven.surefire.plugin.version>
         <junit.version>4.13.2</junit.version>
         <junit.jupiter.version>5.9.0</junit.jupiter.version>
-        <reflection.version>0.10.2</reflection.version>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.reflections</groupId>
-            <artifactId>reflections</artifactId>
-            <version>${reflection.version}</version>
-        </dependency>
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
