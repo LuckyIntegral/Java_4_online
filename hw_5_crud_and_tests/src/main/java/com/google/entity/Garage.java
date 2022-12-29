@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Garage extends BaseEntity {
+    public static final String GARAGE_UTIL = "Garage name   Address       Capacity  Cars inside      Garage id";
     private String name;
     private String address;
     private int capacity;

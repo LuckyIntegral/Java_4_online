@@ -1,6 +1,7 @@
 package com.google.entity;
 
 public class Car extends BaseEntity {
+    public static final String CAR_UTIL = "Brand       Country             Fuel      Color       Garage name   Car id";
     private String brand;
     private String country;
     private String fuel;

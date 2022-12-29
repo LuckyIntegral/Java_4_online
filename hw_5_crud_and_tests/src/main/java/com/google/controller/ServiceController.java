@@ -59,7 +59,7 @@ public class ServiceController {
     private void readCarsInGarage(BufferedReader reader) throws IOException {
         System.out.println("Please enter the garage id");
         String id = reader.readLine().trim();
-        System.out.println(" --------------------------------------------------------------- ");
+        System.out.println(Car.CAR_UTIL);
         for (Car car : service.readCarsInGarage(id)) {
             System.out.println(car);
         }
@@ -79,7 +79,7 @@ public class ServiceController {
     }
 
     private  void findAllGarage() {
-        System.out.println(" -------------------------------------------------------------------- ");
+        System.out.println(Garage.GARAGE_UTIL);
         for (Garage garage : service.findAllGarages()) {
             System.out.println(garage);
         }
@@ -89,7 +89,7 @@ public class ServiceController {
         System.out.println("Please enter the garage id");
         Optional<Garage> garage = service.findGarageById(reader.readLine());
         if (garage.isPresent()) {
-            System.out.println(" ------------------------------------------------------------------ ");
+            System.out.println(Garage.GARAGE_UTIL);
             System.out.println(garage.get());
         } else {
             System.out.println("This garage id is not correct");
@@ -146,7 +146,7 @@ public class ServiceController {
     }
 
     private void findAllCars() {
-        System.out.println(" ------------------------------------------------------------------------- ");
+        System.out.println(Car.CAR_UTIL);
         for (Car car : service.findAllCars()) {
             System.out.println(car);
         }
@@ -158,7 +158,7 @@ public class ServiceController {
         if (car.isEmpty()) {
             System.out.println("This id is incorrect");
         } else {
-            System.out.println(" ----------------------------------------------------------------------- ");
+            System.out.println(Car.CAR_UTIL);
             System.out.println(car.get());
         }
     }

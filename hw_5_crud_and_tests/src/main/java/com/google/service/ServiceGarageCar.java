@@ -27,6 +27,10 @@ public class ServiceGarageCar {
             System.out.println("This garage id is incorrect");
             return;
         }
+        if (garage.get().getCapacity() == garage.get().getCarsInside().size()) {
+            System.out.println("This garage is full");
+            return;
+        }
         car.get().setGarage(garage.get());
         garage.get().addCar(car.get());
     }
