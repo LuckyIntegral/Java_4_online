@@ -22,6 +22,9 @@ public class ServiceGarageCar {
             System.out.println("This car id is incorrect");
             return;
         }
+        if (car.get().getGarage() != null) {
+            findGarageById(car.get().getId()).ifPresent(e -> e.deleteCar(car.get()));
+        }
         Optional<Garage> garage = findGarageById(garageId);
         if (garage.isEmpty()) {
             System.out.println("This garage id is incorrect");
@@ -41,7 +44,7 @@ public class ServiceGarageCar {
             System.out.println("This id is incorrect");
         } else {
             garage.get().getCarsInside().forEach(Car::removeGarage);
-            garage.get().getCarsInside().forEach(e -> garage.get().deleteCar(e));
+            garage.get().getCarsInside().clear();
         }
     }
 

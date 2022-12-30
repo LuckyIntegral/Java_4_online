@@ -38,8 +38,10 @@ public class DaoGarageCar {
     public void removeGarage(Garage garage) {
         findAllCars()
                 .stream()
-                .filter(e -> e.getGarage().getId().equals(garage.getId()))
-                .forEach(Car::removeGarage);
+                .filter(e -> e.getGarage() != null)
+                .filter(e -> garage.getId().equals(e.getGarage().getId()))
+                .findAny()
+                .ifPresent(Car::removeGarage);
         dbGarage.delete(garage);
     }
 }
