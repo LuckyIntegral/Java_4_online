@@ -11,37 +11,37 @@ public class SyntaxRules {
 
     public boolean carBrandIsInvalid(String value) {
         if (value.equals("")) return true;
-        String regex = "^[A-zА-яїЇєЄґҐіІ -]{" + value.length() +"}$";
+        String regex = "^[А-яїЇєЄґҐіІ\\w -]{" + value.length() +"}$";
         return !value.matches(regex);
     }
 
     public boolean carCountryIsInvalid(String value) {
         if (value.equals("")) return true;
-        String regex = "^[A-zА-яїЇєЄґҐіІ -]{" + value.length() +"}$";
+        String regex = "^[А-яїЇєЄґҐіІ\\w -]{" + value.length() +"}$";
         return !value.matches(regex);
     }
 
     public boolean carFuelIsInvalid(String value) {
         if (value.equals("")) return true;
-        String regex = "^[A-zА-яїЇєЄґҐіІ]{" + value.length() +"}$";
+        String regex = "^[А-яїЇєЄґҐіІ\\w -]{" + value.length() +"}$";
         return !value.matches(regex);
     }
 
     public boolean carColorIsInvalid(String value) {
         if (value.equals("")) return true;
-        String regex = "^[A-zА-яїЇєЄґҐіІ -]{" + value.length() +"}$";
+        String regex = "^[А-яїЇєЄґҐіІ\\w -]{" + value.length() +"}$";
         return !value.matches(regex);
     }
 
     public boolean garageNameIsInvalid(String value) {
         if (value.equals("")) return true;
-        String regex = "^[A-zА-яїЇєЄґҐіІ -]{" + value.length() +"}$";
+        String regex = "^[А-яїЇєЄґҐіІ\\w -]{" + value.length() +"}$";
         return !value.matches(regex);
     }
 
     public boolean garageAddressIsInvalid(String value) {
         if (value.equals("")) return true;
-        String regex = "^[A-zА-яїЇєЄґҐіІ \\d-]{" + value.length() +"}$";
+        String regex = "^[А-яїЇєЄґҐіІ\\w -]{" + value.length() +"}$";
         return !value.matches(regex);
     }
 
