@@ -77,42 +77,20 @@ public class ServiceGarageCar {
         optional.ifPresent(dao::removeGarage);
     }
 
-    public void upgradeGarageName(String id, String name) {
-        if (name == null || rules.garageNameIsInvalid(name)) {
+    public void upgradeGarage(Garage garage) {
+        if (garage == null) {
+            System.out.println("Something went wrong");
+            return;
+        }
+        if (rules.garageAddressIsInvalid(garage.getAddress())) {
+            System.out.println("This address is incorrect");
+            garage.setAddress(SyntaxRules.DEFAULT_GARAGE_ADDRESS);
+        } else if (rules.garageCapacityIsInvalid(garage.getCapacity())) {
+            System.out.println("This capacity is incorrect");
+            garage.setCapacity(SyntaxRules.DEFAULT_GARAGE_CAPACITY);
+        } else if (rules.garageNameIsInvalid(garage.getName())) {
             System.out.println("This name is incorrect");
-            return;
-        }
-        Optional<Garage> optional = findGarageById(id);
-        if (optional.isPresent()) {
-            optional.get().setName(name);
-        } else {
-            System.out.println("This id is incorrect");
-        }
-    }
-
-    public void upgradeGarageAddress(String id, String address) {
-        if (address == null || rules.garageAddressIsInvalid(address)) {
-            System.out.println("This address is incorrect");
-            return;
-        }
-        Optional<Garage> optional = findGarageById(id);
-        if (optional.isPresent()) {
-            optional.get().setAddress(address);
-        } else {
-            System.out.println("This address is incorrect");
-        }
-    }
-
-    public void upgradeGarageCapacity(String id, int capacity) {
-        if (rules.garageCapacityIsInvalid(capacity)) {
-            System.out.println("This capacity is incorrect");
-            return;
-        }
-        Optional<Garage> optional = findGarageById(id);
-        if (optional.isPresent()) {
-            optional.get().setCapacity(capacity);
-        } else {
-            System.out.println("This capacity is incorrect");
+            garage.setName(SyntaxRules.DEFAULT_GARAGE_NAME);
         }
     }
 
@@ -152,48 +130,25 @@ public class ServiceGarageCar {
         optional.ifPresent(dao::removeCar);
     }
 
-    public void upgradeCarBrand(String id, String brand) {
-        if (brand == null || rules.carBrandIsInvalid(brand)) {
-            System.out.println("This brand name is incorrect");
+
+    public void upgradeCar(Car car) {
+        if (car == null) {
+            System.out.println("Something went wrong");
             return;
         }
-        Optional<Car> optional = findCarById(id);
-        if (optional.isPresent()) {
-            optional.get().setBrand(brand);
-        } else {System.out.println("This id is incorrect");}
-    }
-
-    public void upgradeCarCountry(String id, String country) {
-        if (country == null || rules.carCountryIsInvalid(country)) {
-            System.out.println("This country name is incorrect");
-            return;
-        }
-        Optional<Car> optional = findCarById(id);
-        if (optional.isPresent()) {
-            optional.get().setCountry(country);
-        } else {System.out.println("This id is incorrect");}
-    }
-
-    public void upgradeCarFuel(String id, String fuel) {
-        if (fuel == null || rules.carFuelIsInvalid(fuel)) {
-            System.out.println("This fuel is incorrect");
-            return;
-        }
-        Optional<Car> optional = findCarById(id);
-        if (optional.isPresent()) {
-            optional.get().setFuel(fuel);
-        } else {System.out.println("This id is incorrect");}
-    }
-
-    public void upgradeCarColor(String id, String color) {
-        if (color == null || rules.carColorIsInvalid(color)) {
+        if (rules.carBrandIsInvalid(car.getBrand())) {
+            System.out.println("This brand is incorrect");
+            car.setBrand(SyntaxRules.DEFAULT_CAR_BRAND);
+        } else if (rules.carColorIsInvalid(car.getColor())) {
             System.out.println("This color is incorrect");
-            return;
+            car.setColor(SyntaxRules.DEFAULT_CAR_COLOR);
+        } else if (rules.carCountryIsInvalid(car.getCountry())) {
+            System.out.println("This country is incorrect");
+            car.setCountry(SyntaxRules.DEFAULT_CAR_COUNTRY);
+        } else if (rules.carFuelIsInvalid(car.getFuel())) {
+            System.out.println("This fuel is incorrect");
+            car.setFuel(SyntaxRules.DEFAULT_CAR_FUEL);
         }
-        Optional<Car> optional = findCarById(id);
-        if (optional.isPresent()) {
-            optional.get().setColor(color);
-        } else {System.out.println("This id is incorrect");}
     }
 
     public List<Car> findAllCars() {

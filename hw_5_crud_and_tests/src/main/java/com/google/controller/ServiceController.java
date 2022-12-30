@@ -3,6 +3,7 @@ package com.google.controller;
 import com.google.entity.Car;
 import com.google.entity.Garage;
 import com.google.service.ServiceGarageCar;
+import com.google.service.SyntaxRules;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -100,24 +101,27 @@ public class ServiceController {
         System.out.println("PLease enter the garage id");
         String id = reader.readLine();
         if (id == null) return;
-        upgradeGarageMenu();
-        switch (reader.readLine().trim()) {
-            case "1" -> {
-                System.out.println("Please enter the name");
-                service.upgradeGarageName(id, reader.readLine().trim());
+        Optional<Garage> optional = service.findGarageById(id);
+        if (optional.isEmpty()) {
+            System.out.println("This id is incorrect");
+        } else {
+            upgradeGarageMenu();
+            String option = reader.readLine().trim();
+            System.out.println("PLease enter the new value");
+            switch (option) {
+                case "1" -> optional.get().setName(reader.readLine().trim());
+                case "2" -> optional.get().setAddress(reader.readLine().trim());
+                case "3" -> {
+                    int number;
+                    try {
+                        number = Integer.parseInt(reader.readLine().trim());
+                    } catch (Exception e) {
+                        number = SyntaxRules.DEFAULT_GARAGE_CAPACITY;
+                    }
+                    optional.get().setCapacity(number);
+                }
             }
-            case "2" -> {
-                System.out.println("Please enter the address");
-                service.upgradeGarageAddress(id, reader.readLine().trim());
-            }
-            case "3" -> {
-                System.out.println("PLease enter the capacity");
-                int number;
-                try {
-                    number = Integer.parseInt(reader.readLine().trim());
-                } catch (Exception e) {number = 1;}
-                service.upgradeGarageCapacity(id, number);
-            }
+            service.upgradeGarage(optional.get());
         }
     }
 
@@ -167,24 +171,20 @@ public class ServiceController {
         System.out.println("Please enter the car id");
         String id = reader.readLine();
         if (id == null) return;
-        upgradeCarMenu();
-        switch (reader.readLine().trim()) {
-            case "1" -> {
-                System.out.println("PLease enter the brand");
-                service.upgradeCarBrand(id, reader.readLine().trim());
+        Optional<Car> optional = service.findCarById(id);
+        if (optional.isEmpty()) {
+            System.out.println("This id is incorrect");
+        } else {
+            upgradeCarMenu();
+            String option = reader.readLine().trim();
+            System.out.println("PLease enter the new value");
+            switch (option) {
+                case "1" -> optional.get().setBrand(reader.readLine().trim());
+                case "2" -> optional.get().setFuel(reader.readLine());
+                case "3" -> optional.get().setCountry(reader.readLine());
+                case "4" -> optional.get().setColor(reader.readLine());
             }
-            case "2" -> {
-                System.out.println("PLease enter the fuel");
-                service.upgradeCarFuel(id, reader.readLine().trim());
-            }
-            case "3" -> {
-                System.out.println("PLease enter the country");
-                service.upgradeCarCountry(id, reader.readLine().trim());
-            }
-            case "4" -> {
-                System.out.println("PLease enter the color");
-                service.upgradeCarColor(id, reader.readLine().trim());
-            }
+            service.upgradeCar(optional.get());
         }
     }
 

@@ -41,7 +41,7 @@ public class SyntaxRules {
 
     public boolean garageAddressIsInvalid(String value) {
         if (value.equals("")) return true;
-        String regex = "^[A-zА-яїЇєЄґҐіІ -]{" + value.length() +"}$";
+        String regex = "^[A-zА-яїЇєЄґҐіІ \\d-]{" + value.length() +"}$";
         return !value.matches(regex);
     }
 
