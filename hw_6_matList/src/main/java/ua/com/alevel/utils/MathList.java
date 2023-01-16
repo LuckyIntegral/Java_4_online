@@ -3,7 +3,7 @@ package ua.com.alevel.utils;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class MathList implements List<Number> {
+public class MathList<T extends Number> implements List<Number> {
     private static final int DEFAULT_SIZE = 10;
     private Number[] data;
     private int size;
@@ -12,19 +12,24 @@ public class MathList implements List<Number> {
         data = new Number[DEFAULT_SIZE];
     }
 
-    public MathList(Number... numbers) {
+    @SafeVarargs
+    public MathList(T... numbers) {
         data = numbers;
         size = numbers.length;
     }
 
-    public MathList(Number[]... numbers) {
+    @SafeVarargs
+    public MathList(T[]... numbers) {
+        data = new Number[DEFAULT_SIZE];
         for (Number[] number : numbers) {
             addAll(List.of(number));
         }
     }
 
-    public MathList(MathList... lists) {
-        for (MathList list : lists) {
+    @SafeVarargs
+    public MathList(MathList<T>... lists) {
+        data = new Number[DEFAULT_SIZE];
+        for (MathList<T> list : lists) {
             addAll(list);
         }
     }
@@ -33,7 +38,7 @@ public class MathList implements List<Number> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        MathList mathList = (MathList) o;
+        MathList<T> mathList = (MathList<T>) o;
         return size == mathList.size && Arrays.equals(data, mathList.data);
     }
 
@@ -67,47 +72,15 @@ public class MathList implements List<Number> {
 
     @Override
     public boolean contains(Object o) {
-        for (Number number : data)
-            if (number.equals(o))
+        for (int i = 0; i < size; i++)
+            if (data[i].equals(o))
                 return true;
         return false;
     }
 
-    //return new Iterator<Number>() {
-    //            private int totalSize = size;
-    //            private int current = 0;
-    //            @Override
-    //            public boolean hasNext() {
-    //                return current < totalSize;
-    //            }
-    //
-    //            @Override
-    //            public Number next() {
-    //                Number n = data[current];
-    //                if (current == totalSize - 1) {
-    //                    current = 0;
-    //                } else {
-    //                    current++;
-    //                }
-    //                return n;
-    //            }
-    //
-    //            @Override
-    //            public void remove() {
-    //                MathList.this.remove(current);
-    //                totalSize = size;
-    //                current--;
-    //            }
-    //
-    //            @Override
-    //            public void forEachRemaining(Consumer<? super Number> action) {
-    //                Iterator.super.forEachRemaining(action);
-    //            }
-    //        };
-
     @Override
     public Iterator<Number> iterator() {
-        return new Itr();
+        return (Iterator<Number>) new Itr<>();
     }
 
     @Override
@@ -117,14 +90,26 @@ public class MathList implements List<Number> {
         return numbers;
     }
 
+    public T[] toArray(int begin, int end) {
+        if ((begin < 0 || end > size) || begin > end)
+            throw new NoSuchElementException();
+        Number[] numbers = new Number[end - begin];
+        if (end - 1 - begin >= 0) System.arraycopy(data, begin, numbers, 0, end - 1 - begin);
+        return (T[])numbers;
+    }
+
     @Override
-    public <T> T[] toArray(T[] a) {
+    public <E> E[] toArray(E[] a) {
         if (a.length < size)
-            return (T[]) Arrays.copyOf(data, size, a.getClass());
-        System.arraycopy(data, 0, a, 0, size);
+            return (E[]) Arrays.copyOf(data, size, a.getClass());
+        System.arraycopy(data, 0, Arrays.stream(a).toArray(), 0, size);
         if (a.length > size)
             a[size] = null;
         return a;
+    }
+
+    public MathList<T> cut(int begin, int end) {
+        return new MathList<>(this.toArray(begin, end));
     }
 
     @Override
@@ -137,6 +122,11 @@ public class MathList implements List<Number> {
         data[size] = number;
         size++;
         return true;
+    }
+
+    @SafeVarargs
+    public final void add(T... numbers) {
+        addAll(Arrays.asList(numbers));
     }
 
     @Override
@@ -160,7 +150,7 @@ public class MathList implements List<Number> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        for (var v : c.toArray())
+        for (Object v : c.toArray())
             if (!contains(v))
                 return false;
         return true;
@@ -168,20 +158,42 @@ public class MathList implements List<Number> {
 
     @Override
     public boolean addAll(Collection<? extends Number> c) {
-        for (Object number : c.toArray())
-            add((Number) number);
+        for (Object number : c.toArray()) {
+            add((T) number);
+        }
         return true;
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends Number> c) {
-        if (c == null) return false;
+        if (c == null)
+            throw new NoSuchElementException();
         if (index < 0 && index >= size) return false;
         Object[] numbers = c.toArray();
-        for (int i = index; i < c.size(); i++) {
-            add((Number)numbers[i]);
+        for (int i = index; i < numbers.length; i++) {
+            add((T)numbers[i]);
         }
         return true;
+    }
+
+    @SafeVarargs
+    public final void join(MathList<T>... mathLists) {
+        for (MathList<T> mathList : mathLists) {
+            add((T[])mathList.toArray());
+        }
+    }
+
+    @SafeVarargs
+    public final void intersection(MathList<T>... mathLists) {
+        for (int i = 0; i < size; i++) {
+            for (MathList<T> mathList : mathLists) {
+                if (!mathList.contains(get(i))) {
+                    remove(get(i));
+                    i--;
+                    break;
+                }
+            }
+        }
     }
 
     @Override
@@ -193,7 +205,8 @@ public class MathList implements List<Number> {
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        if (c == null) return false;
+        if (c == null)
+            throw new NoSuchElementException();
         for (int i = 0; i < size; i++)
             if (!c.contains(data[i])) {
                 remove(data[i]);
@@ -202,16 +215,102 @@ public class MathList implements List<Number> {
         return true;
     }
 
+    public void sortDesc() {
+        sortDesc(0, size);
+    }
+
+    public void sortDesc(T number) {
+        if (indexOf(number) != -1)
+            sortDesc(indexOf(number), size);
+    }
+
+    public void sortDesc(int begin, int end) {
+        boolean changes;
+        do {
+            changes = false;
+            for (int i = begin; i < end - 1; i++) {
+                if (data[i].doubleValue() < data[i + 1].doubleValue()) {
+                    Number temp = data[i];
+                    data[i] = data[i + 1];
+                    data[i + 1] = temp;
+                    changes = true;
+                }
+            }
+        } while (changes);
+    }
+
+    public void sortAsc() {
+        sortAsc(0, size);
+    }
+
+    public void sortAsc(T number) {
+        if (indexOf(number) != -1)
+            sortAsc(indexOf(number), size);
+    }
+
+    public void sortAsc(int begin, int end) {
+        boolean changes;
+        do {
+            changes = false;
+            for (int i = begin; i < end - 1; i++) {
+                if (data[i].doubleValue() > data[i + 1].doubleValue()) {
+                    Number temp = data[i];
+                    data[i] = data[i + 1];
+                    data[i + 1] = temp;
+                    changes = true;
+                }
+            }
+        } while (changes);
+    }
+
     @Override
     public void clear() {
         data = new Number[DEFAULT_SIZE];
         size = 0;
     }
 
+    public void clear(Number[] numbers) {
+        removeAll(Arrays.stream(numbers).toList());
+    }
+
     @Override
-    public Number get(int index) {
+    public T get(int index) {
         if (index < 0 || index >= size) return null;
-        return data[index];
+        return (T)data[index];
+    }
+
+    public T getMax() {
+        if (size == 0)
+            throw new NoSuchElementException();
+        T number = get(0);
+        for (int i = 0; i < size; i++)
+            if (number.doubleValue() < get(i).doubleValue())
+                number = get(i);
+        return number;
+    }
+
+    public T getMin() {
+        if (size == 0)
+            throw new NoSuchElementException();
+        T number = get(0);
+        for (int i = 0; i < size; i++)
+            if (number.doubleValue() > get(i).doubleValue())
+                number = get(i);
+        return number;
+    }
+
+    public double getAverage() {
+        double number = 0.0;
+        for (int i = 0; i < size; i++) {
+            number += get(i).doubleValue();
+        }
+        return number / size;
+    }
+
+    public T getMedian() {
+        if (size == 0)
+            throw new NoSuchElementException();
+        return get(size / 2);
     }
 
     @Override
@@ -232,12 +331,10 @@ public class MathList implements List<Number> {
     }
 
     @Override
-    public Number remove(int index) {
+    public T remove(int index) {
         if (index < 0 || index >= size) return null;
-        Number number = data[index];
-        for (int i = index; i < size - 1; i++) {
-            data[i] = data[i + 1];
-        }
+        T number = (T)data[index];
+        remove(number);
         return number;
     }
 
@@ -260,24 +357,25 @@ public class MathList implements List<Number> {
 
     @Override
     public ListIterator<Number> listIterator() {
-        return new ListItr(0);
+        return (ListIterator<Number>) new ListItr<>(0);
     }
 
     @Override
     public ListIterator<Number> listIterator(int index) {
         if (index > size || index < 0)
             throw new NoSuchElementException();
-        return new ListItr(index);
+        return (ListIterator<Number>) new ListItr<>(index);
     }
+
 
     @Override
     public List<Number> subList(int fromIndex, int toIndex) {
         if (fromIndex < 0 || toIndex >= size) return new ArrayList<>();
         if (fromIndex > toIndex) return new ArrayList<>();
-        return new ArrayList<>(Arrays.asList(data).subList(fromIndex, toIndex));
+        return new ArrayList<>(List.of(toArray(fromIndex, toIndex)));
     }
 
-    private class Itr implements Iterator<Number> {
+    private class Itr<E extends T> implements Iterator<T> {
         int cursor;
         int lastRet = -1;
         int expectedModCount = size;
@@ -289,7 +387,7 @@ public class MathList implements List<Number> {
             return cursor != size;
         }
 
-        public Number next() {
+        public E next() {
             checkForCoModification();
             int i = cursor;
             if (i >= size)
@@ -298,7 +396,7 @@ public class MathList implements List<Number> {
             if (i >= elementData.length)
                 throw new ConcurrentModificationException();
             cursor = i + 1;
-            return elementData[lastRet = i];
+            return (E)elementData[lastRet = i];
         }
 
         public void remove() {
@@ -317,7 +415,7 @@ public class MathList implements List<Number> {
         }
 
         @Override
-        public void forEachRemaining(Consumer<? super Number> action) {
+        public void forEachRemaining(Consumer<? super T> action) {
             Objects.requireNonNull(action);
             final int size = MathList.this.size;
             int i = cursor;
@@ -326,7 +424,7 @@ public class MathList implements List<Number> {
                 if (i >= es.length)
                     throw new ConcurrentModificationException();
                 for (; i < size && size == expectedModCount; i++)
-                    action.accept(es[i]);
+                    action.accept((T)es[i]);
                 cursor = i;
                 lastRet = i - 1;
                 checkForCoModification();
@@ -339,7 +437,7 @@ public class MathList implements List<Number> {
         }
     }
 
-    private class ListItr extends Itr implements ListIterator<Number> {
+    private class ListItr<E extends T> extends Itr<T> implements ListIterator<T> {
         ListItr(int index) {
             super();
             cursor = index;
@@ -357,7 +455,7 @@ public class MathList implements List<Number> {
             return cursor - 1;
         }
 
-        public Number previous() {
+        public E previous() {
             checkForCoModification();
             int i = cursor - 1;
             if (i < 0)
@@ -366,10 +464,10 @@ public class MathList implements List<Number> {
             if (i >= elementData.length)
                 throw new ConcurrentModificationException();
             cursor = i;
-            return elementData[lastRet = i];
+            return (E)elementData[lastRet = i];
         }
 
-        public void set(Number e) {
+        public void set(T e) {
             if (lastRet < 0)
                 throw new IllegalStateException();
             checkForCoModification();
@@ -381,7 +479,7 @@ public class MathList implements List<Number> {
             }
         }
 
-        public void add(Number e) {
+        public void add(T e) {
             checkForCoModification();
 
             try {
