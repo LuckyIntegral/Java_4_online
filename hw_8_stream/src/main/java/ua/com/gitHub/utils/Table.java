@@ -19,9 +19,7 @@ public class Table {
         int counterSize = Math.max(list.stream()
                 .map(entry -> String.valueOf(entry.getCount()).length())
                 .max((a, b) -> a - b).get(), count.length());
-        int perSize = Math.max(list.stream()
-                .map(entry -> String.valueOf(entry.getPercent()).length())
-                .max((a, b) -> a - b).get(), percentage.length());
+        int perSize = percentage.length();
         String bound = '+' + "-".repeat(wordSize)
                 + '+' + "-".repeat(ratingSize)
                 + '+' + "-".repeat(counterSize)
@@ -40,12 +38,12 @@ public class Table {
                 .sorted((a, b) -> a.getRank() - b.getRank())
                 .map(entry -> "|" + entry.getValue()
                         + " ".repeat(wordSize - entry.getValue().length())
-                        + "| " + entry.getRank()
-                        + " ".repeat(ratingSize - 1 - String.valueOf(entry.getRank()).length())
-                        + "| " + entry.getCount()
-                        + " ".repeat(counterSize - 1 - String.valueOf(entry.getCount()).length())
-                        + "| " + entry.getPercent()
-                        + " ".repeat(perSize - 1 - String.valueOf(entry.getPercent()).length())
+                        + "|  " + entry.getRank()
+                        + " ".repeat(ratingSize - 2 - String.valueOf(entry.getRank()).length())
+                        + "|  " + entry.getCount()
+                        + " ".repeat(counterSize - 2 - String.valueOf(entry.getCount()).length())
+                        + "|   " + entry.getPercent() + '%'
+                        + " ".repeat(perSize - 5 - String.valueOf(entry.getPercent()).length())
                         + "|\n" + bound)
                 .forEach(builder::append);
         return builder.toString();

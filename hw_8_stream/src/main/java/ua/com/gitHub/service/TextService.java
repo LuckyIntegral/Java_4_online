@@ -13,12 +13,18 @@ public class TextService {
         String text;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
             do {
-                System.out.println("\nPlease enter text to display statistic. Enter \"exit\" to exit the program");
+                System.out.println("\nPlease enter text to display statistic, or type \"exit\" to exit the program");
                 text = reader.readLine();
+                if (text == null || text.equalsIgnoreCase("exit") || text.isBlank()) {
+                    System.exit(0);
+                }
                 System.out.println(makeStatistic(text));
-            } while (text != null && !text.equalsIgnoreCase("exit"));
+            } while (!text.isEmpty());
         } catch (IOException e) {
+            System.out.println("Try again next time...");
+        } catch (Exception e) {
             System.out.println("Something went wrong...");
+
         }
     }
 
