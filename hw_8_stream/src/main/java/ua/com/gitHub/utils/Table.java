@@ -2,6 +2,7 @@ package ua.com.gitHub.utils;
 
 import ua.com.gitHub.service.TextService.*;
 
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Table {
         int perSize = percentage.length();
         int sizeOfPercents = Math.max(list.stream()
                 .map(e -> e.getPercents().length())
-                .max((a, b) -> a - b).get(), percentPerSentence.length());
+                .max(Comparator.comparingInt(a -> a)).get(), percentPerSentence.length());
         String bound = '+' + "-".repeat(wordSize)
                 + '+' + "-".repeat(ratingSize)
                 + '+' + "-".repeat(counterSize)
@@ -38,7 +39,7 @@ public class Table {
                 .append(" ".repeat(sizeOfPercents - percentPerSentence.length()))
                 .append("|\n").append(bound);
         list.stream()
-                .sorted((a, b) -> a.getRank() - b.getRank())
+                .sorted(Comparator.comparingInt(Entry::getRank))
                 .map(entry -> "|" + entry.getValue()
                         + " ".repeat(wordSize - entry.getValue().length())
                         + "|  " + entry.getRank()

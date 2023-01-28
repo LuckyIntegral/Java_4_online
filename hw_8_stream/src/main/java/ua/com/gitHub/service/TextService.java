@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
 public class TextService {
@@ -27,7 +28,10 @@ public class TextService {
 
     private String makeStatistic(String text) {
         List<Entry> words = countWords(text);
-        int amount = words.stream().map(entry -> entry.count).reduce(Integer::sum).get();
+        int amount = words.stream()
+                .map(entry -> entry.count)
+                .reduce(Integer::sum)
+                .orElseThrow(() -> new RuntimeException("Something"));
         fillEntriesWithSentencesStatistic(words, text);
         List<Integer> top = words.stream()
                 .map(e -> e.count)
@@ -40,33 +44,61 @@ public class TextService {
         return Table.makeEntryTable(words);
     }
 
-    private void fillEntriesWithSentencesStatistic(List<Entry> list, String text) {
-        for (String string : text.split("\\.")) {
-            for (Entry entry : list) {
-                if (string.contains(entry.value)) {
-                    List<String> elements = Pattern.compile("\\w+")
-                            .matcher(text)
-                            .results()
-                            .map(e -> e.group().toLowerCase())
-                            .toList();
-                    int total = 0;
-                    int current = 0;
-                    for (String element : elements) {
-                        total++;
-                        if (element.equals(entry.value)) {
-                            current++;
+    private void fillEntriesWithSentencesStatistic(final List<Entry> list, String text) {
+        List.of(text.split("\\.")).forEach(string -> {
+            list
+                    .stream()
+                    .filter(entry -> string.contains(entry.value))
+                    .forEach(entry -> {
+                        AtomicInteger total = new AtomicInteger();
+                        AtomicInteger current = new AtomicInteger();
+                        Pattern.compile("\\w+")
+                                .matcher(text)
+                                .results()
+                                .map(e -> e.group().toLowerCase())
+                                .forEach(element -> {
+                                    total.getAndIncrement();
+                                    if (element.equals(entry.value)) {
+                                        current.getAndIncrement();
+                                    }
+                                });
+                        if (total.get() == 0 || current.get() == 0) {
+                            entry.add(0);
+                        } else {
+                            entry.add(current.get() * 100 / total.get());
                         }
-                    }
-                    if (total == 0 || current == 0) {
-                        entry.add(0);
-                    } else {
-                        entry.add(current * 100 / total);
-                    }
-                } else {
-                    entry.add(0);
-                }
-            }
-        }
+                    });
+            list
+                    .stream()
+                    .filter(entry -> !string.contains(entry.value))
+                    .forEach(entry -> entry.add(0));
+        });
+//        for (String string : text.split("\\.")) {
+//            for (Entry entry : list) {
+//                if (string.contains(entry.value)) {
+//                    List<String> elements = Pattern.compile("\\w+")
+//                            .matcher(text)
+//                            .results()
+//                            .map(e -> e.group().toLowerCase())
+//                            .toList();
+//                    int total = 0;
+//                    int current = 0;
+//                    for (String element : elements) {
+//                        total++;
+//                        if (element.equals(entry.value)) {
+//                            current++;
+//                        }
+//                    }
+//                    if (total == 0 || current == 0) {
+//                        entry.add(0);
+//                    } else {
+//                        entry.add(current * 100 / total);
+//                    }
+//                } else {
+//                    entry.add(0);
+//                }
+//            }
+//        }
     }
 
     private List<Entry> countWords(String text) {
