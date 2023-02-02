@@ -48,18 +48,20 @@ public class Service {
 
     private void showOptions() {
         System.out.println();
-        System.out.println("To read files and subdirectories inside your directory, please enter 1");
-        System.out.println("To read all internal files in your directory, please enter 2");
-        System.out.println("To create a new internal file in your directory, please enter 3");
-        System.out.println("To create a subdirectory in your directory, please enter 4");
-        System.out.println("To delete internal file in your directory, please enter 5");
-        System.out.println("To delete subdirectory in your directory, please enter 6");
-        System.out.println("To move an internal file from your directory to another directory, please enter 7");
-        System.out.println("To move an subdirectory from your directory to another directory, please enter 8");
-        System.out.println("To find a file by name in your directory or subdirectories, please enter 9");
-        System.out.println("To find a directory in your directory or subdirectories, please enter 10");
-        System.out.println("To find a file that contains some text in your directory or subdirectories, please enter 11");
-        System.out.println("To exit the program, please enter 12");
+        System.out.println("----------------------------------------- MAIN MENU -----------------------------------------");
+        System.out.println("To read files and subdirectories inside your directory, please enter ---------------------- 1");
+        System.out.println("To read all internal files in your directory, please enter -------------------------------- 2");
+        System.out.println("To create a new internal file in your directory, please enter ----------------------------- 3");
+        System.out.println("To create a subdirectory in your directory, please enter ---------------------------------- 4");
+        System.out.println("To delete internal file in your directory, please enter ----------------------------------- 5");
+        System.out.println("To delete subdirectory in your directory, please enter ------------------------------------ 6");
+        System.out.println("To move an internal file from your directory to another directory, please enter ----------- 7");
+        System.out.println("To move an subdirectory from your directory to another directory, please enter ------------ 8");
+        System.out.println("To find a file by name in your directory or subdirectories, please enter ------------------ 9");
+        System.out.println("To find a directory in your directory or subdirectories, please enter -------------------- 10");
+        System.out.println("To find a file that contains some text in your directory or subdirectories, please enter - 11");
+        System.out.println("To exit the program, please enter -------------------------------------------------------- 12");
+        System.out.println("---------------------------------------------------------------------------------------------");
         System.out.println();
     }
 
@@ -76,7 +78,7 @@ public class Service {
                     .stream()
                     .filter(path -> {
                         try {
-                            if (Files.isReadable(path) || path.toString().contains(".")) {
+                            if (!Files.isReadable(path) || path.toString().contains(".")) {
                                 return false;
                             }
                             return String.join(" ", Files.readAllLines(path))
@@ -192,7 +194,6 @@ public class Service {
                 throw new Exception();
             }
             Path target = Files.createFile(Path.of(dir + "/" + sourceFile.getFileName()));
-            System.out.println(target);
             Files.move(sourceFile, target, StandardCopyOption.REPLACE_EXISTING);
         } catch (SecurityException e) {
             System.out.println("Invalid path");
