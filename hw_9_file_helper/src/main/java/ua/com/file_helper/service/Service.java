@@ -24,29 +24,18 @@ public class Service {
             showOptions();
             while ((option = reader.readLine()) != null) {
                 switch (option) {
-                    case "1": readAllFiles(reader, false);
-                        break;
-                    case "2": readAllFiles(reader, true);
-                        break;
-                    case "3": createNewFile(reader, false);
-                        break;
-                    case "4": createNewFile(reader, true);
-                        break;
-                    case "5": deleteFileWithin(reader, false);
-                        break;
-                    case "6": deleteFileWithin(reader, true);
-                        break;
-                    case "7": moveFile(reader);
-                        break;
-                    case "8": moveDirectory(reader);
-                        break;
-                    case "9":
-                        break;
-                    case "10":
-                        break;
-                    case "11":
-                    case "12": exit();
-                        break;
+                    case "1" -> readAllFiles(reader, false);
+                    case "2" -> readAllFiles(reader, true);
+                    case "3" -> createNewFile(reader, false);
+                    case "4" -> createNewFile(reader, true);
+                    case "5" -> deleteFileWithin(reader, false);
+                    case "6" -> deleteFileWithin(reader, true);
+                    case "7" -> moveFile(reader);
+                    case "8" -> moveDirectory(reader);
+                    case "9" -> findFile(reader, false);
+                    case "10" -> findFile(reader, true);
+                    case "11" -> findFilesWithText(reader);
+                    case "12" -> exit();
                 }
                 showOptions();
             }
@@ -59,19 +48,95 @@ public class Service {
 
     private void showOptions() {
         System.out.println();
-        System.out.println("To read files and directories inside your directory, please enter 1");
+        System.out.println("To read files and subdirectories inside your directory, please enter 1");
         System.out.println("To read all internal files in your directory, please enter 2");
         System.out.println("To create a new internal file in your directory, please enter 3");
-        System.out.println("To create a new directory in your directory, please enter 4");
+        System.out.println("To create a subdirectory in your directory, please enter 4");
         System.out.println("To delete internal file in your directory, please enter 5");
-        System.out.println("To delete directory in your directory, please enter 6");
+        System.out.println("To delete subdirectory in your directory, please enter 6");
         System.out.println("To move an internal file from your directory to another directory, please enter 7");
-        System.out.println("To move an internal directory from your directory to another directory, please enter 8");
-        System.out.println("To find a file in your directory, please enter 9");
-        System.out.println("To find a directory in your directory, please enter 10");
-        System.out.println("To find a file that contains some text in your directory, please enter 11");
+        System.out.println("To move an subdirectory from your directory to another directory, please enter 8");
+        System.out.println("To find a file by name in your directory or subdirectories, please enter 9");
+        System.out.println("To find a directory in your directory or subdirectories, please enter 10");
+        System.out.println("To find a file that contains some text in your directory or subdirectories, please enter 11");
         System.out.println("To exit the program, please enter 12");
         System.out.println();
+    }
+
+    private void findFilesWithText(BufferedReader reader) {
+        try {
+            System.out.println("Please enter the path to directory");
+            Path dir = Paths.get(reader.readLine());
+            if (!Files.exists(dir) || !Files.isDirectory(dir)) {
+                throw new SecurityException();
+            }
+            System.out.println("Please enter the text you are looking for");
+            String word = reader.readLine();
+            List<Path> paths = getAllFilesInside(dir)
+                    .stream()
+                    .filter(path -> {
+                        try {
+                            if (Files.isReadable(path) || path.toString().contains(".")) {
+                                return false;
+                            }
+                            return String.join(" ", Files.readAllLines(path))
+                                    .toLowerCase()
+                                    .contains(word.toLowerCase());
+                        } catch (IOException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).toList();
+            if (paths.size() == 0) {
+                System.out.println("No file contains your text");
+            } else {
+                System.out.println("These files contain your text");
+                paths.forEach(System.out::println);
+            }
+        } catch (SecurityException e) {
+            System.out.println("Invalid path");
+        } catch (IOException e) {
+            System.out.println("Something went wrong with io");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    private void findFile(BufferedReader reader, boolean isDir) {
+        try {
+            System.out.println("Please enter the source directory");
+            Path dir = Paths.get(reader.readLine());
+            if (!Files.exists(dir) || !Files.isDirectory(dir)) {
+                throw new SecurityException();
+            }
+            System.out.println("Please enter the file/directory name");
+            String name = reader.readLine();
+            if (name.contains("/")) {
+                System.out.println("Invalid name");
+                return;
+            }
+            List<Path> results = getAllFilesInside(dir)
+                    .stream()
+                    .map(path -> path.toString().substring(dir.toString().length()))
+                    .filter(s -> s.contains(name))
+                    .map(s -> Paths.get(dir + s))
+                    .toList();
+            if (results.size() == 0) {
+                System.out.println("No filename contains your name");
+            } else {
+                System.out.println("These paths contain your name");
+                if (isDir) {
+                    results.stream().filter(Files::isDirectory).forEach(System.out::println);
+                } else {
+                    results.stream().filter(path -> !Files.isDirectory(path)).forEach(System.out::println);
+                }
+            }
+        } catch (SecurityException e) {
+            System.out.println("Invalid path");
+        } catch (IOException e) {
+            System.out.println("Something went wrong with io");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
     }
 
     private void moveDirectory(BufferedReader reader) {
