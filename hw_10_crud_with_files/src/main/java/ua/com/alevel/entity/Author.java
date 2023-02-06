@@ -5,19 +5,28 @@ import java.util.ArrayList;
 public class Author extends BaseEntity {
     private String name;
     private String surName;
-    private ArrayList<Book> books = new ArrayList<>();
+    private ArrayList<String> books = new ArrayList<>();
     public Author(String name, String surName) {
         this.name = name;
         this.surName = surName;
     }
 
-    public ArrayList<Book> getBooks() {
+    @Override
+    public String toString() {
+        return "Author{" +
+                "name='" + name + '\'' +
+                ", surName='" + surName + '\'' +
+                ", books=" + books +
+                '}';
+    }
+
+    public ArrayList<String> getBooks() {
         return books;
     }
 
-    public void addBook(Book book) {
-        if (!books.contains(book)) {
-            books.add(book);
+    public void addBook(String id) {
+        if (!books.contains(id)) {
+            books.add(id);
         }
     }
 
