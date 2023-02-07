@@ -42,7 +42,7 @@
     </dependencies>
 
     <build>
-        <finalName>crud_with_json</finalName>
+        <finalName>crud_with_csv</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
