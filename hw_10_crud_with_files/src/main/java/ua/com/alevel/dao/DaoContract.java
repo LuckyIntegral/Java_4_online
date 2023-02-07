@@ -8,15 +8,18 @@ import ua.com.alevel.entity.Book;
 import java.util.List;
 import java.util.Optional;
 
-public interface DaoInterface {
+public interface DaoContract {
     void createBook(BookDto book);
     void upgradeBookByID(String id, Book book);
     void deleteBookById(String id);
     Optional<Book> findBookById(String id);
     List<Book> findAllBooks();
+    void deleteAllBooks();
     void createAuthor(AuthorDto author);
     void upgradeAuthorById(String id, Author author);
     void deleteAuthorById(String id);
     Optional<Author> findAuthorById(String id);
     List<Author> findAllAuthors();
+    void deleteAllAuthors();
+    void finalRefresh();
 }
