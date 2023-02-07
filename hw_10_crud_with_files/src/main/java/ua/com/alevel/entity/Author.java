@@ -1,15 +1,18 @@
 package ua.com.alevel.entity;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Author extends BaseEntity {
     private String name;
     private String surName;
-    private ArrayList<String> books = new ArrayList<>();
+    private Set<String> books = new HashSet<>();
     public Author(String name, String surName) {
         this.name = name;
         this.surName = surName;
     }
+
+    public Author() {}
 
     @Override
     public String toString() {
@@ -20,14 +23,20 @@ public class Author extends BaseEntity {
                 '}';
     }
 
-    public ArrayList<String> getBooks() {
+    public Set<String> getBooks() {
         return books;
     }
 
     public void addBook(String id) {
-        if (!books.contains(id)) {
-            books.add(id);
-        }
+        books.add(id);
+    }
+
+    public void removeBook(String id) {
+        books.remove(id);
+    }
+
+    public void deleteAllBooks() {
+        books = new HashSet<>();
     }
 
     public void setName(String name) {
