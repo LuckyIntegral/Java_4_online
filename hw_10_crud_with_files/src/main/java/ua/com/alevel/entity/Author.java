@@ -17,6 +17,7 @@ public class Author extends BaseEntity {
     @Override
     public String toString() {
         return "Author{" +
+                "id='" + getId() + '\'' +
                 "name='" + name + '\'' +
                 ", surName='" + surName + '\'' +
                 ", books=" + books +

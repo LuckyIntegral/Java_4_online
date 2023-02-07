@@ -18,5 +18,6 @@ public interface ServiceContract {
     List<Author> findAllAuthors();
     void deleteAuthorById(String id);
     void deleteAllAuthors();
+    void preConfig();
     void exitProgram();
 }

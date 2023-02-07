@@ -19,5 +19,6 @@ public interface ControllerContract {
     void deleteAuthor(BufferedReader reader);
     void deleteAllBooks();
     void deleteAllAuthors();
+    void preConfiguration();
     void exitProgram();
 }

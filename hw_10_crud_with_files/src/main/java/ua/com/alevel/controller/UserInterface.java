@@ -4,6 +4,7 @@ import ua.com.alevel.entity.Author;
 import ua.com.alevel.entity.Book;
 import ua.com.alevel.service.ServiceBusinessLogic;
 import ua.com.alevel.service.ServiceContract;
+import ua.com.alevel.util.PrintUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,6 +15,7 @@ public class UserInterface implements ControllerContract {
     public void start() {
         options();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
+            preConfiguration();
             String option;
             do {
                 option = reader.readLine();
@@ -36,6 +38,7 @@ public class UserInterface implements ControllerContract {
                     case "16" -> deleteAllAuthors();
                     case "17" -> exitProgram();
                 }
+                options();
             } while (!option.equalsIgnoreCase("exit"));
         } catch (IOException e) {
             System.out.println("Something went wrong with IO");
@@ -124,7 +127,7 @@ public class UserInterface implements ControllerContract {
             String id = getBookId(reader);
             Book book = service.findBookById(id);
             if (book == null) {return;}
-            System.out.println(book); // ---------------------------------------------------------
+            System.out.println(PrintUtils.bookToString(book));
         } catch (IOException e) {
             System.out.println("Something went wrong");
         } catch (Exception e) {
@@ -134,9 +137,9 @@ public class UserInterface implements ControllerContract {
 
     @Override
     public void readAllBooks() {
-        System.out.println("--------------------------------------------------------------");
+        System.out.println(PrintUtils.BOOK_HEADER);
         for (Book book : service.findAllBooks()) {
-            System.out.println(book);
+            System.out.println(PrintUtils.bookToString(book));
         }
     }
 
@@ -236,7 +239,7 @@ public class UserInterface implements ControllerContract {
             String id = getAuthorId(reader);
             Author author = service.findAuthorById(id);
             if (author == null) {return;}
-            System.out.println(author);// --------------------------------------------------------
+            System.out.println(PrintUtils.authorToString(author));
         } catch (IOException e) {
             System.out.println("Something went wrong");
         } catch (Exception e) {
@@ -246,9 +249,9 @@ public class UserInterface implements ControllerContract {
 
     @Override
     public void readAllAuthors() {
-        System.out.println("----------------------------------------------------------");
+        System.out.println(PrintUtils.AUTHOR_HEADER);
         for (Author author : service.findAllAuthors()) {
-            System.out.println(author);
+            System.out.println(PrintUtils.authorToString(author));
         }
     }
 
@@ -294,6 +297,11 @@ public class UserInterface implements ControllerContract {
     @Override
     public void deleteAllAuthors() {
         service.deleteAllAuthors();
+    }
+
+    @Override
+    public void preConfiguration() {
+        service.preConfig();
     }
 
     @Override

@@ -21,5 +21,6 @@ public interface DaoContract {
     Optional<Author> findAuthorById(String id);
     List<Author> findAllAuthors();
     void deleteAllAuthors();
+    void firstRefresh();
     void finalRefresh();
 }

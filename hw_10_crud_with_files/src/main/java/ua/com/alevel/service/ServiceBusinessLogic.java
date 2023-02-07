@@ -132,6 +132,11 @@ public class ServiceBusinessLogic implements ServiceContract {
     }
 
     @Override
+    public void preConfig() {
+        dao.firstRefresh();
+    }
+
+    @Override
     public void exitProgram() {
         dao.finalRefresh();
         System.exit(0);

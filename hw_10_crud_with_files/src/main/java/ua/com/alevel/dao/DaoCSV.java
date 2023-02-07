@@ -36,7 +36,6 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public void createBook(BookDto bookDto) {
-        refreshBookList();
         Book book = new Book();
         book.setName(bookDto.name());
         book.setGenre(bookDto.genre());
@@ -47,7 +46,6 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public void upgradeBookByID(String id, Book book) {
-        refreshBookList();
         if (findBookById(id).isPresent()) {
             deleteBookById(id);
             book.setId(id);
@@ -65,12 +63,10 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public void deleteBookById(String id) {
-        refreshBookList();
-        if (findBookById(id).isPresent()) {
-            findBookById(id).get()
-                    .getAuthors()
-                    .forEach(s -> findAuthorById(s).ifPresent(author -> author.removeBook(id)));
-            bookList.remove(findBookById(id).get());
+        Optional<Book> book = findBookById(id);
+        if (book.isPresent()) {
+            bookList.remove(book.get());
+            authorList.forEach(a -> a.removeBook(id));
         }
         refreshAuthorFile();
         refreshBookFile();
@@ -78,7 +74,6 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public Optional<Book> findBookById(String id) {
-        refreshBookList();
         return bookList.stream()
                 .filter(book -> book.getId().equals(id))
                 .findFirst();
@@ -86,14 +81,11 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public List<Book> findAllBooks() {
-        refreshBookList();
         return bookList;
     }
 
     @Override
     public void deleteAllBooks() {
-        refreshBookList();
-        refreshAuthorList();
         bookList = new ArrayList<>();
         authorList.forEach(Author::deleteAllBooks);
         refreshBookFile();
@@ -102,7 +94,6 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public void createAuthor(AuthorDto authorDto) {
-        refreshAuthorList();
         Author author = new Author();
         author.setName(authorDto.name());
         author.setSurName(authorDto.surName());
@@ -113,7 +104,6 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public void upgradeAuthorById(String id, Author author) {
-        refreshAuthorList();
         if (findAuthorById(id).isPresent()) {
             deleteAuthorById(id);
             author.setId(id);
@@ -126,26 +116,21 @@ public class DaoCSV implements DaoContract {
             authorList.add(author);
             refreshBookFile();
         }
-        refreshAuthorFile();
+        finalRefresh();
     }
 
     @Override
     public void deleteAuthorById(String id) {
-        refreshAuthorList();
-        if (findAuthorById(id).isPresent()) {
-            findAuthorById(id).get()
-                    .getBooks()
-                    .forEach(s -> findBookById(id).ifPresent(book -> book.removeAuthor(id)));
-            findAuthorById(id).ifPresent(authorList::remove);
-            authorList.remove(findAuthorById(id).get());
-            refreshBookFile();
+        Optional<Author> author = findAuthorById(id);
+        if (author.isPresent()) {
+            authorList.remove(author.get());
+            bookList.forEach(b -> b.removeAuthor(id));
         }
-        refreshAuthorFile();
+        finalRefresh();
     }
 
     @Override
     public Optional<Author> findAuthorById(String id) {
-        refreshAuthorList();
         return authorList.stream()
                 .filter(author -> author.getId().equals(id))
                 .findFirst();
@@ -153,18 +138,14 @@ public class DaoCSV implements DaoContract {
 
     @Override
     public List<Author> findAllAuthors() {
-        refreshAuthorList();
         return authorList;
     }
 
     @Override
     public void deleteAllAuthors() {
-        refreshAuthorList();
-        refreshBookList();
         authorList = new ArrayList<>();
         bookList.forEach(Book::deleteAllAuthors);
-        refreshAuthorList();
-        refreshBookFile();
+        finalRefresh();
     }
 
     private void refreshBookList() {
@@ -187,19 +168,18 @@ public class DaoCSV implements DaoContract {
     }
 
     private void refreshBookFile() {
-        bookList.stream()
-                .map(e -> e.getId() + "," +
-                        e.getName() + "," +
-                        e.getGenre() +
-                        (e.getAuthors().size() > 0 ?"," + String.join(",", e.getAuthors()) : "") + "\n")
-                .reduce((s, s2) -> s + s2)
-                .ifPresent(e -> {
-                    try {
-                        Files.write(bookCsvFile, e.getBytes());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
+        StringBuilder builder = new StringBuilder();
+        for (Book book : bookList) {
+            builder.append(book.getId()).append(',')
+                    .append(book.getName()).append(',')
+                    .append(book.getGenre()).append((book.getAuthors().size() > 0 ? ',' : ""))
+                    .append(String.join("", book.getAuthors())).append('\n');
+        }
+        try {
+            Files.write(bookCsvFile, builder.toString().getBytes());
+        } catch (IOException e) {
+            System.out.println("The file was not backed up");
+        }
     }
 
     private void refreshAuthorList() {
@@ -222,19 +202,24 @@ public class DaoCSV implements DaoContract {
     }
 
     private void refreshAuthorFile() {
-        authorList.stream()
-                .map(e -> e.getId() + "," +
-                        e.getName() + "," +
-                        e.getSurName() +
-                        (e.getBooks().size() > 0 ? "," + String.join(",", e.getBooks()) : "") + "\n")
-                .reduce((s, s2) -> s + s2)
-                .ifPresent(e -> {
-                    try {
-                        Files.write(authorCsvFile, e.getBytes());
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
+        StringBuilder builder = new StringBuilder();
+        for (Author author : authorList) {
+            builder.append(author.getId()).append(',')
+                    .append(author.getName()).append(',')
+                    .append(author.getSurName()).append(',')
+                    .append(String.join("", author.getBooks())).append('\n');
+        }
+        try {
+            Files.write(authorCsvFile, builder.toString().getBytes());
+        } catch (IOException e) {
+            System.out.println("The file was not backed up");
+        }
+    }
+
+    @Override
+    public void firstRefresh() {
+        refreshAuthorList();
+        refreshBookList();
     }
 
     @Override
