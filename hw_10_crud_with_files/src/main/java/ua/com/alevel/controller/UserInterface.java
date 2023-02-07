@@ -1,13 +1,16 @@
 package ua.com.alevel.controller;
 
-import ua.com.alevel.service.BusinessLogicService;
+import ua.com.alevel.entity.Author;
+import ua.com.alevel.entity.Book;
+import ua.com.alevel.service.ServiceBusinessLogic;
+import ua.com.alevel.service.ServiceContract;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class UserInterface {
-    private final BusinessLogicService service = new BusinessLogicService();
+public class UserInterface implements ControllerContract {
+    private final ServiceContract service = new ServiceBusinessLogic();
     public void start() {
         options();
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -15,21 +18,23 @@ public class UserInterface {
             do {
                 option = reader.readLine();
                 switch (option) {
-//                    case "1" -> ;
-//                    case "2" -> ;
-//                    case "3" -> ;
-//                    case "4" -> ;
-//                    case "5" -> ;
-//                    case "6" -> ;
-//                    case "7" -> ;
-//                    case "8" -> ;
-//                    case "9" -> ;
-//                    case "10" -> ;
-//                    case "11" -> ;
-//                    case "12" -> ;
-//                    case "13" -> ;
-//                    case "14" -> ;
-                    case "17" -> exit();
+                    case "1" -> createBook(reader);
+                    case "2" -> attachAuthorToBook(reader);
+                    case "3" -> deleteAuthorFromBook(reader);
+                    case "4" -> readBookById(reader);
+                    case "5" -> readAllBooks();
+                    case "6" -> upgradeBook(reader);
+                    case "7" -> deleteBook(reader);
+                    case "8" -> createAuthor(reader);
+                    case "9" -> attachBookToAuthor(reader);
+                    case "10" -> deleteBookFromAuthor(reader);
+                    case "11" -> readAuthorById(reader);
+                    case "12" -> readAllAuthors();
+                    case "13" -> upgradeAuthor(reader);
+                    case "14" -> deleteAuthor(reader);
+                    case "15" -> deleteAllBooks();
+                    case "16" -> deleteAllAuthors();
+                    case "17" -> exitProgram();
                 }
             } while (!option.equalsIgnoreCase("exit"));
         } catch (IOException e) {
@@ -63,7 +68,245 @@ public class UserInterface {
         System.out.println("------------------------------------------");
     }
 
-    private void exit() {
-        System.exit(0);
+    @Override
+    public void createBook(BufferedReader reader) {
+        try {
+            System.out.println("Please enter the name of new book");
+            String name = reader.readLine();
+            System.out.println("Please enter the genre of new book");
+            String genre = reader.readLine();
+            Book book = new Book(name, genre);
+            service.createBook(book);
+        } catch (IOException e) {
+            System.out.println("Something went wrong with io");
+        }
+    }
+
+    @Override
+    public void attachAuthorToBook(BufferedReader reader) {
+        try {
+            String bookId = getBookId(reader);
+            Book book = service.findBookById(bookId);
+            if (book == null) {return;}
+            String authorId = getAuthorId(reader);
+            Author author = service.findAuthorById(authorId);
+            if (author == null) {return;}
+            book.addAuthor(authorId);
+            service.upgradeBookById(bookId, book);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void deleteAuthorFromBook(BufferedReader reader) {
+        try {
+            String bookId = getBookId(reader);
+            Book book = service.findBookById(bookId);
+            if (book == null) {return;}
+            String authorId = getAuthorId(reader);
+            Author author = service.findAuthorById(authorId);
+            if (author == null) {return;}
+            book.removeAuthor(authorId);
+            service.upgradeBookById(bookId, book);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void readBookById(BufferedReader reader) {
+        try {
+            String id = getBookId(reader);
+            Book book = service.findBookById(id);
+            if (book == null) {return;}
+            System.out.println(book); // ---------------------------------------------------------
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void readAllBooks() {
+        System.out.println("--------------------------------------------------------------");
+        for (Book book : service.findAllBooks()) {
+            System.out.println(book);
+        }
+    }
+
+    @Override
+    public void upgradeBook(BufferedReader reader) {
+        try {
+            String id = getBookId(reader);
+            Book book = service.findBookById(id);
+            if (book == null) {return;}
+
+            System.out.println("Please enter the new name");
+            String name = reader.readLine();
+            System.out.println("PLease enter the new genre");
+            String genre = reader.readLine();
+
+            book.setName(name);
+            book.setGenre(genre);
+            service.upgradeBookById(id, book);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void deleteBook(BufferedReader reader) {
+        try {
+            String id = getBookId(reader);
+            service.deleteBookById(id);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void createAuthor(BufferedReader reader) {
+        try {
+            System.out.println("Please enter the name");
+            String name = reader.readLine();
+            System.out.println("Please enter the surname");
+            String surname = reader.readLine();
+            Author author = new Author(name, surname);
+            service.createAuthor(author);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void attachBookToAuthor(BufferedReader reader) {
+        try {
+            String authorId = getAuthorId(reader);
+            Author author = service.findAuthorById(authorId);
+            if (author == null) {return;}
+
+            String bookId = getBookId(reader);
+            Book book = service.findBookById(bookId);
+            if (book == null) {return;}
+
+            author.addBook(bookId);
+            service.upgradeAuthorById(authorId, author);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void deleteBookFromAuthor(BufferedReader reader) {
+        try {
+            String authorId = getAuthorId(reader);
+            Author author = service.findAuthorById(authorId);
+            if (author == null) {return;}
+
+            String bookId = getBookId(reader);
+            Book book = service.findBookById(bookId);
+            if (book == null) {return;}
+
+            author.removeBook(bookId);
+            service.upgradeAuthorById(authorId, author);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void readAuthorById(BufferedReader reader) {
+        try {
+            String id = getAuthorId(reader);
+            Author author = service.findAuthorById(id);
+            if (author == null) {return;}
+            System.out.println(author);// --------------------------------------------------------
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void readAllAuthors() {
+        System.out.println("----------------------------------------------------------");
+        for (Author author : service.findAllAuthors()) {
+            System.out.println(author);
+        }
+    }
+
+    @Override
+    public void upgradeAuthor(BufferedReader reader) {
+        try {
+            String id = getAuthorId(reader);
+            Author author = service.findAuthorById(id);
+            if (author == null) {return;}
+
+            System.out.println("Please enter the new name");
+            String name = reader.readLine();
+            System.out.println("Please enter the new surname");
+            String surname = reader.readLine();
+
+            author.setName(name);
+            author.setSurName(surname);
+            service.upgradeAuthorById(id, author);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void deleteAuthor(BufferedReader reader) {
+        try {
+            String id = getAuthorId(reader);
+            service.deleteAuthorById(id);
+        } catch (IOException e) {
+            System.out.println("Something went wrong");
+        } catch (Exception e) {
+            System.out.println("Unknown exception");
+        }
+    }
+
+    @Override
+    public void deleteAllBooks() {
+        service.deleteAllBooks();
+    }
+
+    @Override
+    public void deleteAllAuthors() {
+        service.deleteAllAuthors();
+    }
+
+    @Override
+    public void exitProgram() {
+        service.exitProgram();
+    }
+
+    private String getAuthorId(BufferedReader reader) throws IOException {
+        System.out.println("Please enter the author id below");
+        return reader.readLine();
+    }
+    private String getBookId(BufferedReader reader) throws IOException {
+        System.out.println("Please enter the book id below");
+        return reader.readLine();
     }
 }
