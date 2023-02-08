@@ -173,7 +173,7 @@ public class DaoCSV implements DaoContract {
             builder.append(book.getId()).append(',')
                     .append(book.getName()).append(',')
                     .append(book.getGenre()).append((book.getAuthors().size() > 0 ? ',' : ""))
-                    .append(String.join("", book.getAuthors())).append('\n');
+                    .append(String.join(",", book.getAuthors())).append('\n');
         }
         try {
             Files.write(bookCsvFile, builder.toString().getBytes());
@@ -207,7 +207,7 @@ public class DaoCSV implements DaoContract {
             builder.append(author.getId()).append(',')
                     .append(author.getName()).append(',')
                     .append(author.getSurName()).append(',')
-                    .append(String.join("", author.getBooks())).append('\n');
+                    .append(String.join(",", author.getBooks())).append('\n');
         }
         try {
             Files.write(authorCsvFile, builder.toString().getBytes());
