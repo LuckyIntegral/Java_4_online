@@ -1,7 +1,10 @@
 package ua.com.alevel;
 
+import ua.com.alevel.controller.CalendarController;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        CalendarController controller = new CalendarController();
+        controller.start();
     }
 }
