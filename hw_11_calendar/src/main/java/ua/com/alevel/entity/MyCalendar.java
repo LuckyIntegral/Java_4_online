@@ -13,8 +13,8 @@ public class MyCalendar {
     private long year;
     private boolean leapYear;
     private long millis;
-    private final static int[] daysInYear = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-    private static final int[] daysInLeapYear = new int[] {31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private final static int[] daysInYear = new int[]{0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private static final int[] daysInLeapYear = new int[] {0, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
     private static final int[] daysInYearSum = new int[] {0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334, 365};
     private static final int[] daysInLeapYearSum = new int[] {0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366};
 
@@ -215,5 +215,25 @@ public class MyCalendar {
 
     public long getYear() {
         return year;
+    }
+
+    public int getMilliseconds() {
+        return milliseconds;
+    }
+
+    public int getSeconds() {
+        return seconds;
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public int getHours() {
+        return hours;
+    }
+
+    public int getDays() {
+        return days;
     }
 }

@@ -85,7 +85,7 @@ public class CalendarService {
     }
 
     public long differenceInMonths(MyCalendar first, MyCalendar second) {
-        return ((first.getYear() * 4) + first.getMonths()) - ((second.getYear() * 4) + second.getMonths());
+        return ((first.getYear() * 12) + first.getMonths()) - ((second.getYear() * 12) + second.getMonths());
     }
 
     public long differenceInDays(MyCalendar first, MyCalendar second) {
