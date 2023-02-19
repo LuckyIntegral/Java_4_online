@@ -1,7 +1,10 @@
 package ua.com.alevel;
 
+import ua.com.alevel.controller.FileWorker;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        FileWorker worker = new FileWorker();
+        worker.start();
     }
 }
