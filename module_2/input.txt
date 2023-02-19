@@ -1,0 +1,46 @@
+5
+Zagreb
+2
+2 4
+3 1
+Budapest
+3
+1 4
+3 2
+4 2
+London
+4
+1 1
+2 2
+4 1
+5 3
+Berlin
+3
+2 2
+3 1
+5 2
+Paris
+2
+3 3
+4 2
+16
+Zagreb Budapest
+Zagreb London
+Zagreb Berlin
+Zagreb Paris
+Budapest Zagreb
+Budapest London
+Budapest Berlin
+Budapest Paris
+London Zagreb
+London Berlin
+London Budapest
+London Paris
+Berlin Zagreb
+Berlin Budapest
+Berlin London
+Berlin Paris
+Paris Zagreb
+Paris Budapest
+Paris Berlin
+Paris London
