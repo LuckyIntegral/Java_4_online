@@ -1,0 +1,35 @@
+insert into courses values (default, 'Math for all', 'Math', CURRENT_TIMESTAMP);
+insert into courses values (default, 'Simple English', 'English', CURRENT_TIMESTAMP);
+insert into courses values (default, 'Our literature', 'Literature', CURRENT_TIMESTAMP);
+insert into courses values (default, 'Modern art', 'Art', CURRENT_TIMESTAMP);
+
+insert into students values (default, 'Mark', 'One', 18, CURRENT_TIMESTAMP);
+insert into students values (default, 'Jon', 'Two', 24, CURRENT_TIMESTAMP);
+insert into students values (default, 'Ben', 'Thee', 16, CURRENT_TIMESTAMP);
+insert into students values (default, 'Tom', 'Four', 33, CURRENT_TIMESTAMP);
+insert into students values (default, 'Nick', 'Five', 48, CURRENT_TIMESTAMP);
+insert into students values (default, 'Leo', 'Six', 28, CURRENT_TIMESTAMP);
+insert into students values (default, 'Noa', 'Seven', 22, CURRENT_TIMESTAMP);
+
+insert into stud_curses_deps values (1, 1);
+insert into stud_curses_deps values (1, 2);
+insert into stud_curses_deps values (1, 3);
+insert into stud_curses_deps values (1, 4);
+insert into stud_curses_deps values (2, 1);
+insert into stud_curses_deps values (2, 2);
+insert into stud_curses_deps values (2, 3);
+insert into stud_curses_deps values (2, 4);
+insert into stud_curses_deps values (3, 1);
+insert into stud_curses_deps values (3, 2);
+insert into stud_curses_deps values (3, 3);
+insert into stud_curses_deps values (4, 2);
+insert into stud_curses_deps values (4, 3);
+insert into stud_curses_deps values (4, 4);
+insert into stud_curses_deps values (5, 1);
+insert into stud_curses_deps values (5, 3);
+insert into stud_curses_deps values (6, 2);
+insert into stud_curses_deps values (6, 3);
+insert into stud_curses_deps values (7, 2);
+insert into stud_curses_deps values (7, 3);
+insert into stud_curses_deps values (8, 2);
+insert into stud_curses_deps values (8, 4);
