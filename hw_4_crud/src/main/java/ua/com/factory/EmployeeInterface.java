@@ -16,17 +16,12 @@ public class EmployeeInterface {
 
     private void crud(BufferedReader reader, String line) throws Exception {
         switch (line) {
-            case "1": createEmployee(reader);
-                break;
-            case "2": findEmployee(reader);
-                break;
-            case "3": findAll();
-                break;
-            case "4": updateEmployee(reader);
-                break;
-            case "5": deleteEmployee(reader);
-                break;
-            case "6": stop();
+            case "1" -> createEmployee(reader);
+            case "2" -> findEmployee(reader);
+            case "3" -> findAll();
+            case "4" -> updateEmployee(reader);
+            case "5" -> deleteEmployee(reader);
+            case "6" -> stop();
         }
         menu();
     }
@@ -48,33 +43,34 @@ public class EmployeeInterface {
 
         String line = reader.readLine();
         switch (line) {
-            case "1":
+            case "1" -> {
                 System.out.println("Please enter new name");
                 employee.setFirstName(reader.readLine());
-                break;
-            case "2":
+            }
+            case "2" -> {
                 System.out.println("Please enter new surname");
                 employee.setSurName(reader.readLine());
-                break;
-            case "3":
+            }
+            case "3" -> {
                 System.out.println("Please enter new age");
                 try {
                     employee.setAge(Integer.parseInt(reader.readLine()));
                 } catch (NumberFormatException e) {
                     System.out.println("Is not a number");
                 }
-                break;
-            case "4":
+            }
+            case "4" -> {
                 System.out.println("Please enter new phone number");
                 employee.setPhoneNumber(reader.readLine());
-                break;
-            case "5":
+            }
+            case "5" -> {
                 System.out.println("Please enter new salary");
                 try {
                     employee.setSalary(Integer.parseInt(reader.readLine()));
                 } catch (NumberFormatException e) {
                     System.out.println("Is not a number");
                 }
+            }
         }
     }
 

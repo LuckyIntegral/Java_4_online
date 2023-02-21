@@ -14,9 +14,7 @@ public class EmployeeStorage {
 
     private static void increaseSize() {
         Employee[] newData = new Employee[data.length * 2];
-        for (int i = 0; i < data.length; i++) {
-            newData[i] = data[i];
-        }
+        System.arraycopy(data, 0, newData, 0, data.length);
         size = newData.length;
         data = newData;
     }
