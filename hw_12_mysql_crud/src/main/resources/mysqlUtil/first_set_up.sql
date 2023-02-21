@@ -31,5 +31,3 @@ insert into stud_curses_deps values (6, 2);
 insert into stud_curses_deps values (6, 3);
 insert into stud_curses_deps values (7, 2);
 insert into stud_curses_deps values (7, 3);
-insert into stud_curses_deps values (8, 2);
-insert into stud_curses_deps values (8, 4);
