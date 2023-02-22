@@ -109,16 +109,6 @@ public class CourseDaoImpl implements CourseDao {
         }
     }
 
-    private CourseDto getCourseDtoFromResultSet(ResultSet resultSet) throws SQLException {
-        Course course = new Course();
-        course.setId(resultSet.getLong("id"));
-        course.setName(resultSet.getString("course_name"));
-        course.setSubject(resultSet.getString("course_subject"));
-        course.setCreatedTime(resultSet.getTimestamp("created_time"));
-        int number = resultSet.getInt("number");
-        return new CourseDto(course, number);
-    }
-
     private Course getCourseFromResultSet(ResultSet resultSet) throws SQLException {
         Course course = new Course();
         course.setId(resultSet.getLong("id"));
@@ -126,5 +116,10 @@ public class CourseDaoImpl implements CourseDao {
         course.setSubject(resultSet.getString("course_subject"));
         course.setCreatedTime(resultSet.getTimestamp("created_time"));
         return course;
+    }
+
+    private CourseDto getCourseDtoFromResultSet(ResultSet resultSet) throws SQLException {
+        int number = resultSet.getInt("number");
+        return new CourseDto(getCourseFromResultSet(resultSet), number);
     }
 }

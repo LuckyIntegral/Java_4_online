@@ -136,17 +136,6 @@ public class StudentDaoImpl implements StudentDao {
         }
     }
 
-    private StudentDto getStudentDtoFromResultModel(ResultSet resultSet) throws SQLException {
-        Student student = new Student();
-        student.setName(resultSet.getString("first_name"));
-        student.setLastName(resultSet.getString("last_name"));
-        student.setAge(resultSet.getInt("age"));
-        student.setCreatedTime(resultSet.getTimestamp("created_time"));
-        student.setId(resultSet.getLong("id"));
-        int number = resultSet.getInt("number");
-        return new StudentDto(student, number);
-    }
-
     private Student getStudentFromResultSet(ResultSet resultSet) throws SQLException {
         Student student = new Student();
         student.setName(resultSet.getString("first_name"));
@@ -155,5 +144,10 @@ public class StudentDaoImpl implements StudentDao {
         student.setCreatedTime(resultSet.getTimestamp("created_time"));
         student.setId(resultSet.getLong("id"));
         return student;
+    }
+
+    private StudentDto getStudentDtoFromResultModel(ResultSet resultSet) throws SQLException {
+        int number = resultSet.getInt("number");
+        return new StudentDto(getStudentFromResultSet(resultSet), number);
     }
 }
