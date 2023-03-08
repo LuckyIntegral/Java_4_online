@@ -82,7 +82,7 @@ public class PrintUtils {
         return c.getId() + " ".repeat(4 - String.valueOf(c.getId()).length()) +
                 c.getName() + " ".repeat(15 - c.getName().length()) +
                 c.getType() + " ".repeat(15 - c.getType().toString().length()) +
-                c.getCreated() + " ".repeat(23 - c.getCreated().toString().length()) +
+                c.getCreated() + " ".repeat(24 - c.getCreated().toString().length()) +
                 c.getUpdated();
     }
 
@@ -95,7 +95,7 @@ public class PrintUtils {
                 s.getFirstName() + " ".repeat(15 - s.getFirstName().length()) +
                 s.getLastName() + " ".repeat(15 - s.getLastName().length()) +
                 s.getAge() + " ".repeat(4 - String.valueOf(s.getAge()).length()) +
-                s.getCreated() + " ".repeat(23 - s.getCreated().toString().length()) +
+                s.getCreated() + " ".repeat(24 - s.getCreated().toString().length()) +
                 s.getUpdated();
     }
 }
