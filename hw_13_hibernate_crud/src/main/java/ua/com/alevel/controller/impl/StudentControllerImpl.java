@@ -3,6 +3,7 @@ package ua.com.alevel.controller.impl;
 import ua.com.alevel.controller.StudentController;
 import ua.com.alevel.persistence.entity.Course;
 import ua.com.alevel.persistence.entity.Student;
+import ua.com.alevel.persistence.util.PrintUtils;
 import ua.com.alevel.service.CourseService;
 import ua.com.alevel.service.StudentService;
 import ua.com.alevel.service.impl.CourseServiceImpl;
@@ -16,6 +17,8 @@ import java.util.Set;
 public class StudentControllerImpl implements StudentController {
     private final StudentService studentService = new StudentServiceImpl();
     private final CourseService courseService = new CourseServiceImpl();
+    private final PrintUtils toPrint = PrintUtils.getInstance();
+
     @Override
     public void create(BufferedReader reader) throws IOException {
         Student student = new Student();
@@ -106,9 +109,7 @@ public class StudentControllerImpl implements StudentController {
             System.out.println("Please enter the student id");
             Long id = Long.parseLong(reader.readLine());
             Set<Course> courses = studentService.findById(id).getCourseSet();
-            for (Course course : courses) {
-                System.out.println(course);
-            }
+            System.out.println(toPrint.printCourses(courses));
         } catch (SecurityException e) {
             System.out.println("Invalid id");
         } catch (Exception e) {
@@ -118,7 +119,7 @@ public class StudentControllerImpl implements StudentController {
 
     @Override
     public void getNumberOfCoursesByStudents() {
-        studentService.getNumberOfCoursesByStudents().forEach(System.out::println);
+        System.out.println(toPrint.printCourseNumberByStudentsDto(studentService.getNumberOfCoursesByStudents()));
     }
 
     @Override
@@ -139,7 +140,7 @@ public class StudentControllerImpl implements StudentController {
         try {
             System.out.println("Enter the id");
             Long id = Long.parseLong(reader.readLine());
-            System.out.println(studentService.findById(id));
+            System.out.println(toPrint.print(studentService.findById(id)));
         } catch (SecurityException e) {
             System.out.println("Invalid id");
         } catch (Exception e) {
@@ -149,8 +150,6 @@ public class StudentControllerImpl implements StudentController {
 
     @Override
     public void findAll() {
-        for (Student student : studentService.findAll()) {
-            System.out.println(student);
-        }
+        System.out.println(toPrint.printStudents(studentService.findAll()));
     }
 }

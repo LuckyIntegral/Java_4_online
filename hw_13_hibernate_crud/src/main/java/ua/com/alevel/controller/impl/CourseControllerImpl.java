@@ -4,6 +4,7 @@ import ua.com.alevel.controller.CourseController;
 import ua.com.alevel.persistence.entity.Course;
 import ua.com.alevel.persistence.entity.Student;
 import ua.com.alevel.persistence.type.CourseType;
+import ua.com.alevel.persistence.util.PrintUtils;
 import ua.com.alevel.service.CourseService;
 import ua.com.alevel.service.impl.CourseServiceImpl;
 
@@ -14,6 +15,7 @@ import java.util.Set;
 
 public class CourseControllerImpl implements CourseController {
     private final CourseService service = new CourseServiceImpl();
+    private final PrintUtils toPrint = PrintUtils.getInstance();
     @Override
     public void create(BufferedReader reader) throws IOException {
         Course course = new Course();
@@ -27,7 +29,7 @@ public class CourseControllerImpl implements CourseController {
 
     @Override
     public void getNumberOfStudentByCourses() {
-        service.getNumberOfStudentByCourses().forEach(System.out::println);
+        System.out.println(toPrint.printStudentNumberByCoursesDto(service.getNumberOfStudentByCourses()));
     }
 
     @Override
@@ -35,10 +37,8 @@ public class CourseControllerImpl implements CourseController {
         try {
             System.out.println("Please enter the student id");
             Long id = Long.parseLong(reader.readLine());
-            Set<Student> courses = service.findById(id).getStudentSet();
-            for (Student student : courses) {
-                System.out.println(student);
-            }
+            Set<Student> students = service.findById(id).getStudentSet();
+            System.out.println(toPrint.printStudents(students));
         } catch (SecurityException e) {
             System.out.println("Invalid id");
         } catch (Exception e) {
@@ -84,7 +84,7 @@ public class CourseControllerImpl implements CourseController {
         try {
             System.out.println("Enter the id");
             Long id = Long.parseLong(reader.readLine());
-            System.out.println(service.findById(id));
+            System.out.println(toPrint.print(service.findById(id)));
         } catch (SecurityException e) {
             System.out.println("Invalid id");
         }
@@ -92,8 +92,6 @@ public class CourseControllerImpl implements CourseController {
 
     @Override
     public void findAll() {
-        for (Course course : service.findAll()) {
-            System.out.println(course);
-        }
+        System.out.println(toPrint.printCourses(service.findAll()));
     }
 }
